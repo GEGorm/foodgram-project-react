@@ -1,10 +1,10 @@
 from django.db import models
+from django.db.models import Exists, OuterRef
+
 from users.models import User
-from django.db.models import OuterRef, Exists
 
 
 class Ingredient(models.Model):
-    id = models.AutoField(primary_key=True, verbose_name='id')
     name = models.CharField(max_length=100, verbose_name='name')
     measurement_unit = models.CharField(max_length=15,
                                         verbose_name='measurement_unit')
@@ -18,7 +18,6 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    id = models.AutoField(primary_key=True, verbose_name='id')
     name = models.CharField(max_length=100, verbose_name='name')
     slug = models.SlugField(max_length=100, unique=True, verbose_name='slug')
     color = models.CharField(max_length=15, verbose_name='color')
@@ -49,7 +48,6 @@ class RecipeQuerySet(models.QuerySet):
 
 
 class Recipe(models.Model):
-    id = models.AutoField(primary_key=True, verbose_name='id')
     tags = models.ManyToManyField(Tag, verbose_name='tag')
     author = models.ForeignKey(
         User,
@@ -58,7 +56,7 @@ class Recipe(models.Model):
         verbose_name='Автор')
     ingredients = models.ManyToManyField(Ingredient,
                                          verbose_name='ingredients',
-                                         through='RecipeIngridients')
+                                         through='RecipeIngridient')
     name = models.CharField(max_length=100, verbose_name='name')
     text = models.TextField('Текст')
     cooking_time = models.PositiveSmallIntegerField(
@@ -81,13 +79,20 @@ class Recipe(models.Model):
         return self.name
 
 
-class RecipeIngridients(models.Model):
+class RecipeIngridient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.PositiveSmallIntegerField(
         default=0,
         null=False,
         verbose_name='количество')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='UniqueRecipeIngridient'),
+        ]
 
 
 class Favorite(models.Model):
@@ -137,7 +142,9 @@ class ShoppingList(models.Model):
         on_delete=models.CASCADE,
         related_name='shopping_list',
         verbose_name='Пользователь')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe,
+                               on_delete=models.CASCADE,
+                               related_name='shop_list',)
 
     class Meta:
         constraints = [
