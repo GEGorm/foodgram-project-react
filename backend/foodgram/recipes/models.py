@@ -10,8 +10,8 @@ class Ingredient(models.Model):
                                         verbose_name='measurement_unit')
 
     class Meta:
-        verbose_name = 'Ингридиент'
-        verbose_name_plural = 'Ингридиенты'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.name + ', ' + self.measurement_unit

@@ -122,15 +122,18 @@ class RecipeSerializerCreate(serializers.ModelSerializer):
         if request.method == 'DELETE':
             return data
 
+        if data['cooking_time'] < 1:
+            raise serializers.ValidationError(
+                    'Время приготовления должно быть больше ноля')
         ingredients = []
         for ingredient in data['recipeingridient_set']:
             ingredients.append(ingredient['ingredient'].get('id'))
             if ingredient['amount'] < 1:
                 raise serializers.ValidationError(
-                    'Количество ингридиентов должно быть больше ноля')
+                    'Количество ингредиентов должно быть больше ноля')
         if len(ingredients) != len(set(ingredients)):
             raise serializers.ValidationError(
-                'В запросе присутствуют дублирующиеся ингридиенты')
+                'В запросе присутствуют дублирующиеся ингредиенты')
         if len(data['tags']) != len(set(data['tags'])):
             raise serializers.ValidationError(
                 'В запросе присутствуют дублирующиеся тэги')
