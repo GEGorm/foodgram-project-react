@@ -47,6 +47,7 @@ urlpatterns = [
                                       'delete': 'destroy',
                                       }),
          name='shopping_list'),
+    path('recipes/download_shopping_cart/', shopping_list_file, name='shopping_file'),
     path('', include(router_v1.urls)),
-    path('download_shopping_cart/', shopping_list_file, name='shopping_file'),
+
 ]
