@@ -7,7 +7,8 @@ from recipes.models import Recipe
 class RecipeFilter(FilterSet):
     tags = AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = BooleanFilter(method="favorited", widget=BooleanWidget())
-    is_in_shopping_cart = BooleanFilter(method="shopping_cart", widget=BooleanWidget())
+    is_in_shopping_cart = BooleanFilter(method="shopping_cart",
+                                        widget=BooleanWidget())
 
     def favorited(self, queryset, name, value):
         user = self.request.user

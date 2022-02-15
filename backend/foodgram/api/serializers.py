@@ -124,7 +124,7 @@ class RecipeSerializerCreate(serializers.ModelSerializer):
 
         if data['cooking_time'] < 1:
             raise serializers.ValidationError(
-                    'Время приготовления должно быть больше ноля')
+                'Время приготовления должно быть больше ноля')
         ingredients = []
         for ingredient in data['recipeingridient_set']:
             ingredients.append(ingredient['ingredient'].get('id'))
@@ -222,7 +222,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follow
-        fields = ('email',  'id', 'username',
+        fields = ('email', 'id', 'username',
                   'first_name', 'last_name',
                   'recipes_count', 'recipes', 'is_subscribed')
 
