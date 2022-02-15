@@ -10,9 +10,7 @@ services:
     ports:
       - "5432:5432"
   backend:
-    build:
-     context: ../backend/foodgram
-     dockerfile: Dockerfile
+    image: gegorm/foodgram:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,9 +18,7 @@ services:
     depends_on:
       - db
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: gegorm/frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
@@ -41,3 +37,4 @@ volumes:
   static_value:
   media_value:
   postgres_data:
+  result_build:
