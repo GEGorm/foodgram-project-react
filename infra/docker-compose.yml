@@ -18,7 +18,9 @@ services:
     depends_on:
       - db
   frontend:
-    image: gegorm/frontend:latest
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
