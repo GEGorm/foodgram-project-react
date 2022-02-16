@@ -11,13 +11,17 @@ User = get_user_model()
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.BooleanField(read_only=True)
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
         fields = ('email', 'username', 'first_name',
                   'last_name', 'id', 'is_subscribed')
         read_only_fields = ['id']
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        return Follow.objects.filter(user=user, author=obj).exists()
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -99,18 +103,19 @@ class RecipeSerializerCreate(serializers.ModelSerializer):
         return self.update_related_data(ingredients_data, tags_data, recipe)
 
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
+        ingredients_data = validated_data.pop('recipeingridient_set')
         tags_data = validated_data.pop('tags')
         instance = super().update(instance, validated_data)
         return self.update_related_data(ingredients_data, tags_data, instance)
 
     def update_related_data(self, ingredients_data, tags_data, recipe):
+        recipe.tags.clear()
         for tag in tags_data:
             recipe.tags.add(tag)
         for ingredient_el in ingredients_data:
             ingredient_id = ingredient_el['ingredient'].get('id')
             ingredient = get_object_or_404(Ingredient, id=ingredient_id)
-            RecipeIngridient.objects.create(
+            RecipeIngridient.objects.update_or_create(
                 recipe=recipe,
                 ingredient=ingredient,
                 amount=ingredient_el['amount']
