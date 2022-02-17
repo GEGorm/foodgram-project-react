@@ -2,15 +2,15 @@
 Foodgram
 
 # Расположение
-http://51.250.25.85
+http://51.250.25.85  
 Логин: root  
 Пароль: root  
 
 ### Об авторе.
 
-Гормулинский Геннадий
-gormulinskiy@gmail.com
-YANDEX Practicum
+Гормулинский Геннадий  
+gormulinskiy@gmail.com  
+YANDEX Practicum  
 
 ### О проекте
 
